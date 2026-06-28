@@ -2,6 +2,7 @@ import Navbar from '../components/Navbar'
 import Hero from '../components/Hero'
 import Card from '../components/Card'
 import Footer from '../components/Footer'
+import { useTheme } from '../context/ThemeContext'
 
 const products = [
   { name: "Raw Himalayan Honey", weight: "500g", description: "Cold-extracted from high-altitude flowers. Rich in enzymes.", tag: "Best Seller" },
@@ -11,12 +12,16 @@ const products = [
 ]
 
 function Home() {
+  const { isDark } = useTheme()
+
   return (
-    <div>
+    <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-gray-950 text-white' : 'bg-white text-gray-900'}`}>
       <Navbar />
       <Hero />
-      <div className="bg-amber-50 py-16 px-6">
-        <h2 className="text-center text-green-900 text-3xl font-bold mb-10">Our Products</h2>
+      <div className={`py-16 px-6 transition-colors duration-300 ${isDark ? 'bg-gray-900' : 'bg-amber-50'}`}>
+        <h2 className={`text-center text-3xl font-bold mb-10 ${isDark ? 'text-yellow-400' : 'text-green-900'}`}>
+          Our Products
+        </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
           {products.map((p) => (
             <Card

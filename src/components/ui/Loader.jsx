@@ -1,3 +1,10 @@
+/**
+ * Loader component.
+ * A spinning loading indicator used during data fetching or async actions.
+ *
+ * @param {Object} props
+ * @param {"sm"|"md"|"lg"} [props.size="md"] - Size of the spinner.
+ */
 function Loader({ size = "md" }) {
   const sizes = {
     sm: "w-4 h-4 border-2",

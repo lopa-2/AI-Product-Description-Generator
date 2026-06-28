@@ -2,24 +2,26 @@ import { useState } from "react"
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import { Button, Input, Loader, Toast, Modal } from "../components/ui"
+import { useTheme } from "../context/ThemeContext"
 
 function Demo() {
   const [showModal, setShowModal] = useState(false)
   const [showToast, setShowToast] = useState(false)
   const [inputValue, setInputValue] = useState("")
+  const { isDark } = useTheme()
 
   return (
-    <div>
+    <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-gray-950 text-white' : 'bg-white text-gray-900'}`}>
       <Navbar />
-      <div className="bg-amber-50 min-h-screen px-6 py-16">
-        <h1 className="text-4xl font-bold text-green-900 text-center mb-12">
+      <div className={`min-h-screen px-6 py-16 transition-colors duration-300 ${isDark ? 'bg-gray-900' : 'bg-amber-50'}`}>
+        <h1 className={`text-4xl font-bold text-center mb-12 ${isDark ? 'text-yellow-400' : 'text-green-900'}`}>
           Component Library
         </h1>
 
         <div className="max-w-2xl mx-auto flex flex-col gap-12">
 
           <section>
-            <h2 className="text-2xl font-bold text-green-800 mb-4">Buttons</h2>
+            <h2 className={`text-2xl font-bold mb-4 ${isDark ? 'text-yellow-300' : 'text-green-800'}`}>Buttons</h2>
             <div className="flex gap-4 flex-wrap">
               <Button variant="primary">Primary</Button>
               <Button variant="secondary">Secondary</Button>
@@ -31,7 +33,7 @@ function Demo() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-green-800 mb-4">Input</h2>
+            <h2 className={`text-2xl font-bold mb-4 ${isDark ? 'text-yellow-300' : 'text-green-800'}`}>Input</h2>
             <Input
               label="Product Name"
               placeholder="e.g. Himalayan Honey"
@@ -46,7 +48,7 @@ function Demo() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-green-800 mb-4">Loader</h2>
+            <h2 className={`text-2xl font-bold mb-4 ${isDark ? 'text-yellow-300' : 'text-green-800'}`}>Loader</h2>
             <div className="flex gap-8 items-center">
               <Loader size="sm" />
               <Loader size="md" />
@@ -55,19 +57,19 @@ function Demo() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-green-800 mb-4">Modal</h2>
+            <h2 className={`text-2xl font-bold mb-4 ${isDark ? 'text-yellow-300' : 'text-green-800'}`}>Modal</h2>
             <Button onClick={() => setShowModal(true)}>Open Modal</Button>
             <Modal
               isOpen={showModal}
               onClose={() => setShowModal(false)}
               title="Example Modal"
             >
-              <p className="text-gray-600">This is the modal content area.</p>
+              <p className={isDark ? 'text-gray-300' : 'text-gray-600'}>This is the modal content area.</p>
             </Modal>
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-green-800 mb-4">Toast</h2>
+            <h2 className={`text-2xl font-bold mb-4 ${isDark ? 'text-yellow-300' : 'text-green-800'}`}>Toast</h2>
             <Button onClick={() => setShowToast(true)}>Show Toast</Button>
             {showToast && (
               <Toast

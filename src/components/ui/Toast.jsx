@@ -1,5 +1,15 @@
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 
+/**
+ * Toast component.
+ * A brief notification that appears in the corner of the screen and
+ * automatically dismisses itself after 3 seconds.
+ *
+ * @param {Object} props
+ * @param {string} props.message - The text to display in the toast.
+ * @param {"success"|"error"|"info"} [props.type="success"] - Visual style of the toast.
+ * @param {() => void} props.onClose - Called automatically after the toast's timeout elapses, to hide it.
+ */
 function Toast({ message, type = "success", onClose }) {
   const types = {
     success: "bg-green-800 text-white",

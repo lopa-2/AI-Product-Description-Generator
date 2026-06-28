@@ -1,6 +1,16 @@
+/**
+ * Button component.
+ *
+ * @param {Object} props
+ * @param {React.ReactNode} props.children - Button label/content.
+ * @param {"primary"|"secondary"|"outline"} [props.variant="primary"] - Visual style of the button.
+ * @param {"sm"|"md"|"lg"} [props.size="md"] - Size of the button.
+ * @param {boolean} [props.disabled=false] - Disables the button and applies a disabled style.
+ * @param {() => void} [props.onClick] - Click handler.
+ */
 function Button({ children, variant = "primary", size = "md", disabled = false, onClick }) {
   const base = "font-semibold rounded-lg transition-all duration-200"
-  
+
   const variants = {
     primary: "bg-green-800 text-white hover:bg-green-700",
     secondary: "bg-transparent text-green-800 border-2 border-green-800 hover:bg-green-100",
