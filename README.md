@@ -23,17 +23,33 @@ A web application that generates SEO-friendly product descriptions for Himalayan
 
 ## How to Run Backend Locally
 
+Prerequisites
+-Node.js installed
+-Hugging Face API key
+-A free Supabase account and project (for the database)
+
+## Setup The Database
+
+
+1.Create a free project at supabase.com
+2.Go to Project Settings → Database and copy your connection strings (pooled + direct)
+3.Copy backend/.env.example to backend/.env and fill in your   actual DATABASE_URL and DIRECT_URL values
+
 ### Prerequisites
 - Node.js installed
 - Hugging Face API key
+- A free Supabase account and project (for the database)
 
 ### Steps
-1. Clone the repository
-2. Navigate to backend folder: cd backend
-3. Install dependencies: npm install
-4. Create .env file: PORT=5000 and HF_API_KEY=your_huggingface_token_here
-5. Start the server: npm run dev
-6. Server runs on http://localhost:5000
+
+1.Clone the repository
+2.Navigate to backend folder: cd backend
+3.Install dependencies: npm install
+4.Set up your .env file as described above, and add HF_API_KEY=your_huggingface_token_here and PORT=5000
+5.Generate the Prisma client: npx prisma generate
+6.Push the schema to your database: npx prisma db push
+7.Start the server: npm run dev
+8.Server runs on http://localhost:5000
 
 ## API Endpoints
 | Method | Endpoint | Description |
@@ -50,3 +66,23 @@ A web application that generates SEO-friendly product descriptions for Himalayan
 1. In project root: npm install
 2. npm run dev
 3. Open http://localhost:5173
+
+## Week 5 - Database Integration
+
+Migrated from in-memory storage to a persistent PostgreSQL database
+Database hosted on Supabase, connected via Prisma ORM
+Schema defines two models: User and Description
+All 6+ API endpoints now read from and write to the real database
+
+
+
+We chose PostgreSQL, hosted on Supabase, using Prisma as the ORM.
+
+
+Supabase gives a fully managed Postgres instance with zero server setup, plus a dashboard to inspect data directly — useful for debugging without writing queries by hand.
+Prisma generates a type-safe client from a single schema file, so there's no raw SQL to write and fewer chances of runtime errors from typos or mismatched types.
+PostgreSQL's relational model fits the data well, since User and Description have a clear one-to-many relationship.
+
+
+
+Note: this project uses Prisma v6.15.0 rather than the latest v7 release, due to breaking changes in v7 that weren't compatible with this project's setup.
