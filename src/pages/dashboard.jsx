@@ -1,18 +1,97 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { useTheme } from '../context/ThemeContext'
 
-const savedListings = [
-  { id: 1, product: 'Raw Himalayan Honey', tone: 'Professional', date: '20 Jun 2026', description: 'Cold-extracted from high-altitude Himalayan flowers, this pure raw honey retains all natural enzymes and antioxidants.' },
-  { id: 2, product: 'Organic Ghee', tone: 'Friendly', date: '19 Jun 2026', description: 'Made lovingly from A2 cow milk using traditional churning methods. Pure, golden, and absolutely delicious!' },
-  { id: 3, product: 'Wild Forest Turmeric', tone: 'Bold', date: '18 Jun 2026', description: 'Unmatched potency. Wild-harvested high-curcumin turmeric with zero additives. Nature at its most powerful.' },
-  { id: 4, product: 'Himalayan Pink Salt', tone: 'Professional', date: '17 Jun 2026', description: 'Hand-mined from ancient Himalayan deposits, this mineral-rich pink salt contains 84+ trace minerals.' },
-]
+const API_URL = 'http://localhost:5000/api/descriptions'
 
 function Dashboard() {
-  const [selected, setSelected] = useState(savedListings[0])
+  const [listings, setListings] = useState([])
+  const [selected, setSelected] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editText, setEditText] = useState('')
+  const [saving, setSaving] = useState(false)
   const { isDark } = useTheme()
+
+  useEffect(() => {
+    fetchListings()
+  }, [])
+
+  const fetchListings = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await fetch(API_URL)
+      if (!res.ok) throw new Error('Failed to load listings')
+      const data = await res.json()
+      setListings(data)
+      if (data.length > 0) setSelected(data[0])
+    } catch (err) {
+      setError('Could not load your saved listings. Is the backend running?')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSelect = (item) => {
+    setSelected(item)
+    setIsEditing(false)
+  }
+
+  const handleDelete = async (id) => {
+    try {
+      const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error('Delete failed')
+      const updated = listings.filter((item) => item.id !== id)
+      setListings(updated)
+      setSelected(updated.length > 0 ? updated[0] : null)
+      setIsEditing(false)
+    } catch (err) {
+      setError('Failed to delete listing.')
+    }
+  }
+
+  const startEditing = () => {
+    setEditText(selected.description)
+    setIsEditing(true)
+  }
+
+  const cancelEditing = () => {
+    setIsEditing(false)
+    setEditText('')
+  }
+
+  const handleUpdate = async () => {
+    setSaving(true)
+    try {
+      const res = await fetch(`${API_URL}/${selected.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ description: editText }),
+      })
+      if (!res.ok) throw new Error('Update failed')
+      const updatedItem = await res.json()
+
+      setListings(listings.map((item) => (item.id === updatedItem.id ? updatedItem : item)))
+      setSelected(updatedItem)
+      setIsEditing(false)
+    } catch (err) {
+      setError('Failed to update description.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const formatDate = (isoString) => {
+    if (!isoString) return ''
+    return new Date(isoString).toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    })
+  }
 
   return (
     <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-gray-950 text-white' : 'bg-white text-gray-900'}`}>
@@ -25,7 +104,7 @@ function Dashboard() {
                 My Saved Listings
               </h1>
               <p className={`text-sm mt-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                {savedListings.length} descriptions saved
+                {listings.length} descriptions saved
               </p>
             </div>
             <a
@@ -36,60 +115,122 @@ function Dashboard() {
             </a>
           </div>
 
-          <div className="grid grid-cols-3 gap-6">
-            {/* LEFT LIST */}
-            <div className="col-span-1 flex flex-col gap-3">
-              {savedListings.map((item) => (
-                <div
-                  key={item.id}
-                  onClick={() => setSelected(item)}
-                  className={`cursor-pointer rounded-xl p-4 border transition-all ${
-                    selected.id === item.id
-                      ? isDark
-                        ? 'bg-gray-700 border-yellow-400 border-2'
-                        : 'bg-green-50 border-green-800 border-2'
-                      : isDark
-                        ? 'bg-gray-800 border-gray-600'
-                        : 'bg-white border-gray-200'
-                  }`}
-                >
-                  <p className={`font-semibold text-sm ${isDark ? 'text-yellow-300' : 'text-green-900'}`}>
-                    {item.product}
-                  </p>
-                  <p className={`text-xs mt-1 ${isDark ? 'text-gray-400' : 'text-gray-400'}`}>
-                    {item.tone} · {item.date}
-                  </p>
-                </div>
-              ))}
-            </div>
+          {loading && <p className={isDark ? 'text-gray-300' : 'text-gray-600'}>Loading...</p>}
+          {error && <p className="text-red-500">{error}</p>}
 
-            {/* RIGHT DETAIL */}
-            <div className={`col-span-2 border rounded-xl p-6 transition-colors duration-300 ${isDark ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-200'}`}>
-              <div className={`rounded-lg p-8 text-center text-5xl mb-5 ${isDark ? 'bg-gray-700' : 'bg-green-50'}`}>
-                🏔️
+          {!loading && !error && listings.length === 0 && (
+            <p className={isDark ? 'text-gray-300' : 'text-gray-600'}>
+              No descriptions saved yet. Generate one to get started!
+            </p>
+          )}
+
+          {!loading && !error && listings.length > 0 && (
+            <div className="grid grid-cols-3 gap-6">
+              {/* LEFT LIST */}
+              <div className="col-span-1 flex flex-col gap-3">
+                {listings.map((item) => (
+                  <div
+                    key={item.id}
+                    onClick={() => handleSelect(item)}
+                    className={`cursor-pointer rounded-xl p-4 border transition-all ${
+                      selected?.id === item.id
+                        ? isDark
+                          ? 'bg-gray-700 border-yellow-400 border-2'
+                          : 'bg-green-50 border-green-800 border-2'
+                        : isDark
+                          ? 'bg-gray-800 border-gray-600'
+                          : 'bg-white border-gray-200'
+                    }`}
+                  >
+                    <p className={`font-semibold text-sm ${isDark ? 'text-yellow-300' : 'text-green-900'}`}>
+                      {item.productName}
+                    </p>
+                    <p className={`text-xs mt-1 ${isDark ? 'text-gray-400' : 'text-gray-400'}`}>
+                      {item.tone} · {formatDate(item.createdAt)}
+                    </p>
+                  </div>
+                ))}
               </div>
-              <span className="bg-green-900 text-yellow-400 text-xs font-bold px-3 py-1 rounded-full">
-                {selected.tone}
-              </span>
-              <h2 className={`text-xl font-bold mt-3 mb-2 ${isDark ? 'text-yellow-400' : 'text-green-900'}`}>
-                {selected.product}
-              </h2>
-              <p className={`text-sm leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                {selected.description}
-              </p>
-              <div className="flex gap-3 mt-5">
-                <button
-                  onClick={() => navigator.clipboard.writeText(selected.description)}
-                  className="bg-yellow-400 text-green-900 font-bold px-4 py-2 rounded-lg text-sm hover:bg-yellow-300"
-                >
-                  Copy
-                </button>
-                <button className="border border-red-400 text-red-500 px-4 py-2 rounded-lg text-sm hover:bg-red-50">
-                  Delete
-                </button>
-              </div>
+
+              {/* RIGHT DETAIL */}
+              {selected && (
+                <div className={`col-span-2 border rounded-xl p-6 transition-colors duration-300 ${isDark ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-200'}`}>
+                  <div
+                    className={`rounded-lg p-8 mb-5 flex items-center justify-center ${isDark ? 'bg-gray-700' : 'bg-green-50'}`}
+                    style={{ minHeight: '120px' }}
+                  >
+                    <span className={`text-xs font-semibold uppercase tracking-wide ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
+                      Product Image
+                    </span>
+                  </div>
+                  <span className="bg-green-900 text-yellow-400 text-xs font-bold px-3 py-1 rounded-full">
+                    {selected.tone}
+                  </span>
+                  <h2 className={`text-xl font-bold mt-3 mb-2 ${isDark ? 'text-yellow-400' : 'text-green-900'}`}>
+                    {selected.productName}
+                  </h2>
+
+                  {!isEditing ? (
+                    <p className={`text-sm leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                      {selected.description}
+                    </p>
+                  ) : (
+                    <textarea
+                      value={editText}
+                      onChange={(e) => setEditText(e.target.value)}
+                      rows={6}
+                      className={`w-full text-sm rounded-lg p-3 border mt-2 ${
+                        isDark
+                          ? 'bg-gray-900 border-gray-600 text-gray-200'
+                          : 'bg-white border-gray-300 text-gray-800'
+                      }`}
+                    />
+                  )}
+
+                  <div className="flex gap-3 mt-5">
+                    {!isEditing ? (
+                      <>
+                        <button
+                          onClick={() => navigator.clipboard.writeText(selected.description)}
+                          className="bg-yellow-400 text-green-900 font-bold px-4 py-2 rounded-lg text-sm hover:bg-yellow-300"
+                        >
+                          Copy
+                        </button>
+                        <button
+                          onClick={startEditing}
+                          className="border border-green-700 text-green-800 px-4 py-2 rounded-lg text-sm hover:bg-green-50"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(selected.id)}
+                          className="border border-red-400 text-red-500 px-4 py-2 rounded-lg text-sm hover:bg-red-50"
+                        >
+                          Delete
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          onClick={handleUpdate}
+                          disabled={saving}
+                          className="bg-yellow-400 text-green-900 font-bold px-4 py-2 rounded-lg text-sm hover:bg-yellow-300 disabled:opacity-50"
+                        >
+                          {saving ? 'Saving...' : 'Save Changes'}
+                        </button>
+                        <button
+                          onClick={cancelEditing}
+                          className="border border-gray-400 text-gray-600 px-4 py-2 rounded-lg text-sm hover:bg-gray-50"
+                        >
+                          Cancel
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
+          )}
         </div>
       </div>
       <Footer />

@@ -1,11 +1,31 @@
 const express = require("express");
 const cors = require("cors");
+const passport = require('./config/passport');
+const authRoutes = require('./routes/authRoutes');
+const oauthRoutes = require('./routes/oauthRoutes');
+const rateLimit = require('express-rate-limit');
 const dotenv = require("dotenv");
 dotenv.config();
 
 const app = express();
 app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
+app.use(passport.initialize());
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: { error: 'Too many attempts, try again in 15 minutes' },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/register', authLimiter);
+
+// Auth routes (register/login + OAuth)
+app.use('/api/auth', authRoutes);
+app.use('/api/auth', oauthRoutes);
 
 // Routes
 app.use("/api/generate", require("./routes/generate"));

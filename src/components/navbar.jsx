@@ -1,8 +1,15 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useTheme } from '../context/ThemeContext'
 
 function Navbar() {
   const { isDark, toggleTheme } = useTheme()
+  const navigate = useNavigate()
+  const isLoggedIn = !!localStorage.getItem('token')
+
+  function handleLogout() {
+    localStorage.removeItem('token')
+    navigate('/login')
+  }
 
   return (
     <nav
@@ -31,9 +38,18 @@ function Navbar() {
           Dashboard
         </Link>
 
-        <Link to="/login" className="hover:text-yellow-400 transition">
-          Login
-        </Link>
+        {isLoggedIn ? (
+          <button
+            onClick={handleLogout}
+            className="hover:text-yellow-400 transition"
+          >
+            Logout
+          </button>
+        ) : (
+          <Link to="/login" className="hover:text-yellow-400 transition">
+            Login
+          </Link>
+        )}
 
         {/* Theme Toggle */}
         <button

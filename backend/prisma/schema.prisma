@@ -9,12 +9,16 @@ datasource db {
 }
 
 model User {
-  id           String        @id @default(uuid())
-  email        String        @unique
-  passwordHash String
-  name         String?
-  createdAt    DateTime      @default(now())
-  descriptions Description[]
+  id             String        @id @default(uuid())
+  email          String        @unique
+  passwordHash   String?
+  name           String?
+  oauthProvider  String?
+  oauthId        String?
+  createdAt      DateTime      @default(now())
+  descriptions   Description[]
+
+  @@unique([oauthProvider, oauthId])
 }
 
 model Description {
