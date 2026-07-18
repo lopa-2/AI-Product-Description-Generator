@@ -8,6 +8,9 @@ import Demo from './pages/Demo'
 import Generator from './pages/Generator'
 import OAuthSuccess from './pages/OAuthSuccess'
 import ProtectedRoute from './components/ProtectedRoute'
+import Signup from './pages/Signup'
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/Reset'
 function App() {
   return (
     <ThemeProvider>
@@ -20,6 +23,9 @@ function App() {
           <Route path="/demo" element={<Demo />} />
           <Route path="/generator" element={<ProtectedRoute><Generator /></ProtectedRoute>} />
           <Route path="/oauth-success" element={<OAuthSuccess />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />  
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

@@ -5,6 +5,14 @@ import { useTheme } from '../context/ThemeContext'
 
 const API_URL = 'http://localhost:5000/api/descriptions'
 
+function authHeaders() {
+  const token = localStorage.getItem('token')
+  return {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+  }
+}
+
 function Dashboard() {
   const [listings, setListings] = useState([])
   const [selected, setSelected] = useState(null)
@@ -23,7 +31,7 @@ function Dashboard() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(API_URL)
+      const res = await fetch(API_URL, { headers: authHeaders() })
       if (!res.ok) throw new Error('Failed to load listings')
       const data = await res.json()
       setListings(data)
@@ -42,7 +50,10 @@ function Dashboard() {
 
   const handleDelete = async (id) => {
     try {
-      const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' })
+      const res = await fetch(`${API_URL}/${id}`, {
+        method: 'DELETE',
+        headers: authHeaders(),
+      })
       if (!res.ok) throw new Error('Delete failed')
       const updated = listings.filter((item) => item.id !== id)
       setListings(updated)
@@ -68,7 +79,7 @@ function Dashboard() {
     try {
       const res = await fetch(`${API_URL}/${selected.id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeaders(),
         body: JSON.stringify({ description: editText }),
       })
       if (!res.ok) throw new Error('Update failed')

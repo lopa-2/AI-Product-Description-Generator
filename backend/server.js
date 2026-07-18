@@ -1,11 +1,13 @@
+const dotenv = require("dotenv");
+dotenv.config();
+
 const express = require("express");
 const cors = require("cors");
 const passport = require('./config/passport');
 const authRoutes = require('./routes/authRoutes');
 const oauthRoutes = require('./routes/oauthRoutes');
 const rateLimit = require('express-rate-limit');
-const dotenv = require("dotenv");
-dotenv.config();
+
 
 const app = express();
 app.use(cors({ origin: "http://localhost:5173" }));

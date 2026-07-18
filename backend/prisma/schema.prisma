@@ -15,10 +15,10 @@ model User {
   name           String?
   oauthProvider  String?
   oauthId        String?
+  resetToken     String?
+  resetTokenExpiry DateTime?
   createdAt      DateTime      @default(now())
   descriptions   Description[]
-
-  @@unique([oauthProvider, oauthId])
 }
 
 model Description {
