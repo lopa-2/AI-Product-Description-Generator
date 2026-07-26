@@ -4,6 +4,9 @@ import Footer from '../components/Footer'
 import { useTheme } from '../context/ThemeContext'
 import { generateDescription, saveDescription } from '../api'
 
+// Fixed product catalog for HimShakti — not user-generated data, so no backend fetch needed.
+// All dynamic/user data (saved descriptions, auth) is already fetched live from the backend.
+
 const products = [
   'Raw Himalayan Honey',
   'Organic Ghee',
