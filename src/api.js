@@ -1,5 +1,13 @@
 const BASE_URL = "http://localhost:5000/api";
 
+function authHeaders() {
+  const token = localStorage.getItem("token");
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+}
+
 export const generateDescription = async (formData) => {
   const res = await fetch(`${BASE_URL}/generate`, {
     method: "POST",
@@ -13,7 +21,7 @@ export const generateDescription = async (formData) => {
 export const saveDescription = async (data) => {
   const res = await fetch(`${BASE_URL}/descriptions`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: authHeaders(),
     body: JSON.stringify(data),
   });
   if (!res.ok) throw new Error("Save failed");
@@ -21,14 +29,16 @@ export const saveDescription = async (data) => {
 };
 
 export const getAllDescriptions = async () => {
-  const res = await fetch(`${BASE_URL}/descriptions`);
+  const res = await fetch(`${BASE_URL}/descriptions`, {
+    headers: authHeaders(),
+  });
   return res.json();
 };
 
 export const updateDescription = async (id, data) => {
   const res = await fetch(`${BASE_URL}/descriptions/${id}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: authHeaders(),
     body: JSON.stringify(data),
   });
   if (!res.ok) throw new Error("Update failed");
@@ -38,11 +48,14 @@ export const updateDescription = async (id, data) => {
 export const deleteDescription = async (id) => {
   const res = await fetch(`${BASE_URL}/descriptions/${id}`, {
     method: "DELETE",
+    headers: authHeaders(),
   });
   if (!res.ok) throw new Error("Delete failed");
 };
 
 export const searchDescriptions = async (q) => {
-  const res = await fetch(`${BASE_URL}/descriptions/search?q=${q}`);
+  const res = await fetch(`${BASE_URL}/descriptions/search?q=${q}`, {
+    headers: authHeaders(),
+  });
   return res.json();
 };

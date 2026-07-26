@@ -214,7 +214,11 @@ function Dashboard() {
                           Edit
                         </button>
                         <button
-                          onClick={() => handleDelete(selected.id)}
+                          onClick={() => {
+                            if (window.confirm(`Delete "${selected.productName}"? This can't be undone.`)) {
+                              handleDelete(selected.id)
+                            }
+                          }}
                           className="border border-red-400 text-red-500 px-4 py-2 rounded-lg text-sm hover:bg-red-50"
                         >
                           Delete
