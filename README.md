@@ -79,3 +79,23 @@ We chose PostgreSQL, hosted on Supabase, using Prisma as the ORM.
 1. In project root: npm install
 2. npm run dev
 3. Open http://localhost:5173
+
+## Week 6 — Authentication & Security
+- Built JWT-based register/login/logout with bcrypt password hashing
+- Added Google and GitHub OAuth via Passport.js
+- Protected backend routes with requireAuth middleware (401 without a valid token)
+- Added rate limiting (express-rate-limit) on /api/auth/login and /api/auth/register
+- Added input validation with Zod on auth endpoints
+- Added forgot/reset password flow with email delivery via Nodemailer
+
+## Week 7 — AI API Integration
+- Connected the product description generator to the Hugging Face Inference API (meta-llama/Llama-3.1-8B-Instruct)
+- Built a tone-mapped prompt template (professional, friendly, bold, premium, traditional)
+- Added loading and error states to the Generator UI
+- Documented 3 prompt tone variations and results in PROMPTS.md
+
+## Week 8 — Frontend Completion
+- Verified zero mock/hardcoded data remains except the fixed product catalog (documented in Generator.jsx)
+- Added delete confirmation dialogs and a React error boundary for graceful error handling
+- Fixed missing JWT auth headers in api.js that were causing 401s on Dashboard actions
+- Responsive-checked all core pages at 375px, 768px, and 1440px — no layout breaks found
