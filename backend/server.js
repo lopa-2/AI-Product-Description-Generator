@@ -10,7 +10,26 @@ const rateLimit = require('express-rate-limit');
 
 
 const app = express();
-app.use(cors({ origin: "http://localhost:5173" }));
+
+// Trust Render's reverse proxy so req.protocol correctly reports https
+// (needed for Passport OAuth callback URLs to build with the right protocol)
+app.set('trust proxy', 1);
+
+// Allow both local dev and production frontend to call this API
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://ai-product-description-generator-eta.vercel.app"
+];
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  }
+}));
+
 app.use(express.json());
 app.use(passport.initialize());
 
