@@ -112,4 +112,5 @@ We chose PostgreSQL, hosted on Supabase, using Prisma as the ORM.
 
 ### Known Limitations on Free Tier
 - **Render free tier spin-down:** The backend spins down after 15 minutes of inactivity. The first request after an idle period may take 30–60 seconds to respond while the server wakes up. Subsequent requests are fast.
+
 - **Vercel free tier:** No known limitations affecting this app's core functionality.
