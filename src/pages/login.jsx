@@ -18,7 +18,7 @@ function Login() {
     setError('')
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/login', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -115,7 +115,7 @@ function Login() {
           {/* OAuth Buttons */}
           <div className="flex flex-col gap-3">
             <button
-              onClick={() => window.location.href = 'http://localhost:5000/api/auth/google'}
+              onClick={() => window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/google`}
               className={`w-full flex items-center justify-center gap-2 border rounded-lg py-2.5 text-sm font-semibold transition-all ${
                 isDark ? 'border-gray-500 text-white hover:bg-gray-700' : 'border-gray-300 text-gray-700 hover:bg-gray-50'
               }`}
@@ -129,7 +129,7 @@ function Login() {
               Continue with Google
             </button>
             <button
-              onClick={() => window.location.href = 'http://localhost:5000/api/auth/github'}
+              onClick={() => window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/github`}
               className={`w-full flex items-center justify-center gap-2 border rounded-lg py-2.5 text-sm font-semibold transition-all ${
                 isDark ? 'border-gray-500 text-white hover:bg-gray-700' : 'border-gray-300 text-gray-700 hover:bg-gray-50'
               }`}
