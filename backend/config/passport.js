@@ -13,7 +13,7 @@ async function findOrCreateUser(email, name) {
   }
   return user;
 }
-
+console.log('GOOGLE_CALLBACK_URL from env:', process.env.GOOGLE_CALLBACK_URL);
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
