@@ -17,7 +17,7 @@ async function findOrCreateUser(email, name) {
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: '/api/auth/google/callback'
+  callbackURL: process.env.GOOGLE_CALLBACK_URL || '/api/auth/google/callback'
 }, async (accessToken, refreshToken, profile, done) => {
   try {
     const email = profile.emails[0].value;
@@ -32,7 +32,7 @@ passport.use(new GoogleStrategy({
 passport.use(new GitHubStrategy({
   clientID: process.env.GITHUB_CLIENT_ID,
   clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  callbackURL: '/api/auth/github/callback'
+  callbackURL: process.env.GITHUB_CALLBACK_URL || '/api/auth/github/callback'
 }, async (accessToken, refreshToken, profile, done) => {
   try {
     const email = profile.emails && profile.emails[0]
