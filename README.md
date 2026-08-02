@@ -99,3 +99,17 @@ We chose PostgreSQL, hosted on Supabase, using Prisma as the ORM.
 - Added delete confirmation dialogs and a React error boundary for graceful error handling
 - Fixed missing JWT auth headers in api.js that were causing 401s on Dashboard actions
 - Responsive-checked all core pages at 375px, 768px, and 1440px — no layout breaks found
+
+## Week 9 — Deployment
+
+**Live Frontend URL:** https://ai-product-description-generator-eta.vercel.app
+**Live Backend URL:** https://ai-product-description-generator-8n74.onrender.com
+
+### Tech Stack
+- **Frontend:** React + Vite, deployed on Vercel
+- **Backend:** Node.js / Express, deployed on Render
+- **Database:** Supabase (PostgreSQL), connected via Prisma ORM
+
+### Known Limitations on Free Tier
+- **Render free tier spin-down:** The backend spins down after 15 minutes of inactivity. The first request after an idle period may take 30–60 seconds to respond while the server wakes up. Subsequent requests are fast.
+- **Vercel free tier:** No known limitations affecting this app's core functionality.
