@@ -17,7 +17,7 @@ router.post("/", async (req, res) => {
     traditional: "authentic, rustic, and rooted in Indian heritage",
   };
 
-  const prompt = `You are a product copywriter for HimShakti, an Indian food brand. Write a compelling Amazon product description.
+  const prompt = `You are a product copywriter. Write a compelling Amazon product description.
 
 Product Name: ${productName}
 Key Ingredients: ${ingredients || productName}

@@ -3,6 +3,7 @@ dotenv.config();
 
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 const passport = require('./config/passport');
 const authRoutes = require('./routes/authRoutes');
 const oauthRoutes = require('./routes/oauthRoutes');
@@ -32,6 +33,9 @@ app.use(cors({
 
 app.use(express.json());
 app.use(passport.initialize());
+
+// Serves generated promo images at /generated/<filename> — matches the
+app.use(express.static(path.join(__dirname, "public")));
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,

@@ -13,6 +13,12 @@ function authHeaders() {
   }
 }
 
+const CARD = '#111114'
+const BORDER = 'rgba(255,255,255,0.10)'
+const BORDER_ACTIVE = 'rgba(255,255,255,0.35)'
+const MUTED = 'rgba(255,255,255,0.55)'
+const FAINT = 'rgba(255,255,255,0.28)'
+
 function Dashboard() {
   const [listings, setListings] = useState([])
   const [selected, setSelected] = useState(null)
@@ -104,85 +110,101 @@ function Dashboard() {
     })
   }
 
+  const pageBg = isDark ? 'bg-black' : 'bg-[#F4F1EA]'
+  const heading = isDark ? 'text-white' : 'text-[#111114]'
+  const subtext = isDark ? 'text-white/50' : 'text-gray-500'
+
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-gray-950 text-white' : 'bg-white text-gray-900'}`}>
+    <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-black text-white' : 'bg-white text-gray-900'}`}>
       <Navbar />
-      <div className={`min-h-screen px-6 py-12 transition-colors duration-300 ${isDark ? 'bg-gray-900' : 'bg-amber-50'}`}>
+      <div className={`min-h-screen px-6 pt-28 pb-16 transition-colors duration-300 ${pageBg}`}>
         <div className="max-w-5xl mx-auto">
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h1 className={`text-3xl font-bold ${isDark ? 'text-yellow-400' : 'text-green-900'}`}>
-                My Saved Listings
-              </h1>
-              <p className={`text-sm mt-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                {listings.length} descriptions saved
-              </p>
+              <h1 className={`text-3xl font-bold ${heading}`}>My Saved Listings</h1>
+              <p className={`text-sm mt-1 ${subtext}`}>{listings.length} descriptions saved</p>
             </div>
             <a
               href="/generator"
-              className="bg-yellow-400 text-green-900 font-bold px-5 py-2 rounded-lg text-sm hover:bg-yellow-300"
+              className="font-bold px-5 py-2.5 rounded-full text-sm border transition-colors"
+              style={{ borderColor: isDark ? BORDER : '#111114', color: isDark ? '#fff' : '#111114' }}
             >
               + Generate New
             </a>
           </div>
 
-          {loading && <p className={isDark ? 'text-gray-300' : 'text-gray-600'}>Loading...</p>}
+          {loading && <p className={subtext}>Loading...</p>}
           {error && <p className="text-red-500">{error}</p>}
 
           {!loading && !error && listings.length === 0 && (
-            <p className={isDark ? 'text-gray-300' : 'text-gray-600'}>
-              No descriptions saved yet. Generate one to get started!
-            </p>
+            <p className={subtext}>No descriptions saved yet. Generate one to get started!</p>
           )}
 
           {!loading && !error && listings.length > 0 && (
             <div className="grid grid-cols-3 gap-6">
               {/* LEFT LIST */}
               <div className="col-span-1 flex flex-col gap-3">
-                {listings.map((item) => (
-                  <div
-                    key={item.id}
-                    onClick={() => handleSelect(item)}
-                    className={`cursor-pointer rounded-xl p-4 border transition-all ${
-                      selected?.id === item.id
-                        ? isDark
-                          ? 'bg-gray-700 border-yellow-400 border-2'
-                          : 'bg-green-50 border-green-800 border-2'
-                        : isDark
-                          ? 'bg-gray-800 border-gray-600'
-                          : 'bg-white border-gray-200'
-                    }`}
-                  >
-                    <p className={`font-semibold text-sm ${isDark ? 'text-yellow-300' : 'text-green-900'}`}>
-                      {item.productName}
-                    </p>
-                    <p className={`text-xs mt-1 ${isDark ? 'text-gray-400' : 'text-gray-400'}`}>
-                      {item.tone} · {formatDate(item.createdAt)}
-                    </p>
-                  </div>
-                ))}
+                {listings.map((item, i) => {
+                  const isActive = selected?.id === item.id
+                  return (
+                    <div
+                      key={item.id}
+                      onClick={() => handleSelect(item)}
+                      className="cursor-pointer rounded-2xl p-5 border transition-all"
+                      style={{
+                        backgroundColor: CARD,
+                        borderColor: isActive ? BORDER_ACTIVE : BORDER,
+                      }}
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <span className="text-2xl font-bold" style={{ color: FAINT }}>
+                          {String(i + 1).padStart(2, '0')}
+                        </span>
+                        <span
+                          className="text-[10px] font-semibold tracking-wide px-2.5 py-1 rounded-full border"
+                          style={{ borderColor: BORDER, color: MUTED }}
+                        >
+                          {formatDate(item.createdAt)}
+                        </span>
+                      </div>
+                      <p className="text-[10px] font-semibold tracking-[0.15em] uppercase mb-1" style={{ color: MUTED }}>
+                        {item.tone}
+                      </p>
+                      <p className="font-semibold text-sm text-white">{item.productName}</p>
+                    </div>
+                  )
+                })}
               </div>
 
               {/* RIGHT DETAIL */}
               {selected && (
-                <div className={`col-span-2 border rounded-xl p-6 transition-colors duration-300 ${isDark ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-200'}`}>
-                  <div
-                    className={`rounded-lg p-8 mb-5 flex items-center justify-center ${isDark ? 'bg-gray-700' : 'bg-green-50'}`}
-                    style={{ minHeight: '120px' }}
-                  >
-                    <span className={`text-xs font-semibold uppercase tracking-wide ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
-                      Product Image
+                <div className="col-span-2 rounded-2xl p-8 border" style={{ backgroundColor: CARD, borderColor: BORDER }}>
+                  <div className="flex items-start justify-between mb-4">
+                    <span className="text-4xl font-bold" style={{ color: FAINT }}>
+                      {String(listings.findIndex((l) => l.id === selected.id) + 1).padStart(2, '0')}
+                    </span>
+                    <span
+                      className="text-[10px] font-semibold tracking-wide px-3 py-1.5 rounded-full border"
+                      style={{ borderColor: BORDER, color: MUTED }}
+                    >
+                      {formatDate(selected.createdAt)}
                     </span>
                   </div>
-                  <span className="bg-green-900 text-yellow-400 text-xs font-bold px-3 py-1 rounded-full">
+
+                  <p className="text-[11px] font-semibold tracking-[0.15em] uppercase mb-2" style={{ color: MUTED }}>
                     {selected.tone}
-                  </span>
-                  <h2 className={`text-xl font-bold mt-3 mb-2 ${isDark ? 'text-yellow-400' : 'text-green-900'}`}>
-                    {selected.productName}
-                  </h2>
+                  </p>
+                  <h2 className="text-2xl font-bold mb-1 text-white">{selected.productName}</h2>
+                  {(selected.brandName || selected.price) && (
+                    <p className="text-xs mb-5" style={{ color: MUTED }}>
+                      {selected.brandName && <span>{selected.brandName}</span>}
+                      {selected.brandName && selected.price && <span> · </span>}
+                      {selected.price && <span>{selected.price}</span>}
+                    </p>
+                  )}
 
                   {!isEditing ? (
-                    <p className={`text-sm leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                    <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)' }}>
                       {selected.description}
                     </p>
                   ) : (
@@ -190,26 +212,24 @@ function Dashboard() {
                       value={editText}
                       onChange={(e) => setEditText(e.target.value)}
                       rows={6}
-                      className={`w-full text-sm rounded-lg p-3 border mt-2 ${
-                        isDark
-                          ? 'bg-gray-900 border-gray-600 text-gray-200'
-                          : 'bg-white border-gray-300 text-gray-800'
-                      }`}
+                      className="w-full text-sm rounded-xl p-3 border mt-2 bg-black/40 text-white/85"
+                      style={{ borderColor: BORDER }}
                     />
                   )}
 
-                  <div className="flex gap-3 mt-5">
+                  <div className="flex gap-3 mt-6">
                     {!isEditing ? (
                       <>
                         <button
                           onClick={() => navigator.clipboard.writeText(selected.description)}
-                          className="bg-yellow-400 text-green-900 font-bold px-4 py-2 rounded-lg text-sm hover:bg-yellow-300"
+                          className="bg-white text-black font-bold px-4 py-2 rounded-full text-sm hover:opacity-85"
                         >
                           Copy
                         </button>
                         <button
                           onClick={startEditing}
-                          className="border border-green-700 text-green-800 px-4 py-2 rounded-lg text-sm hover:bg-green-50"
+                          className="px-4 py-2 rounded-full text-sm border text-white hover:bg-white/5"
+                          style={{ borderColor: BORDER }}
                         >
                           Edit
                         </button>
@@ -219,7 +239,7 @@ function Dashboard() {
                               handleDelete(selected.id)
                             }
                           }}
-                          className="border border-red-400 text-red-500 px-4 py-2 rounded-lg text-sm hover:bg-red-50"
+                          className="px-4 py-2 rounded-full text-sm border border-red-500/40 text-red-400 hover:bg-red-500/10"
                         >
                           Delete
                         </button>
@@ -229,13 +249,14 @@ function Dashboard() {
                         <button
                           onClick={handleUpdate}
                           disabled={saving}
-                          className="bg-yellow-400 text-green-900 font-bold px-4 py-2 rounded-lg text-sm hover:bg-yellow-300 disabled:opacity-50"
+                          className="bg-white text-black font-bold px-4 py-2 rounded-full text-sm hover:opacity-85 disabled:opacity-50"
                         >
                           {saving ? 'Saving...' : 'Save Changes'}
                         </button>
                         <button
                           onClick={cancelEditing}
-                          className="border border-gray-400 text-gray-600 px-4 py-2 rounded-lg text-sm hover:bg-gray-50"
+                          className="px-4 py-2 rounded-full text-sm border text-white hover:bg-white/5"
+                          style={{ borderColor: BORDER }}
                         >
                           Cancel
                         </button>
