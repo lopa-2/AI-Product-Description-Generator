@@ -49,9 +49,7 @@ function Card({ name, weight, description, tag }) {
             {/* Glow */}
             <div className="absolute inset-0 rounded-[22px] bg-gradient-to-r from-pink-500/20 via-sky-400/20 to-purple-500/20 blur-2xl opacity-0 group-hover:opacity-100 transition duration-500" />
 
-            <div className="relative z-10 flex flex-col justify-between h-full p-7 text-white">
-              <div className="text-3xl">🏔️</div>
-
+            <div className="relative z-10 flex flex-col justify-end h-full p-7 text-white">
               <div>
                 <span className="inline-block mb-4 rounded-full bg-white/10 px-3 py-1 text-xs text-gray-300">
                   {tag}
@@ -102,10 +100,6 @@ function Card({ name, weight, description, tag }) {
                     >
                       <X className="w-5 h-5 text-white" />
                     </button>
-
-                    <div className="mb-6 flex h-40 items-center justify-center rounded-2xl bg-[#222] text-7xl">
-                      🏔️
-                    </div>
 
                     <span className="inline-block rounded-full bg-gradient-to-r from-pink-500 to-purple-500 px-4 py-1 text-xs font-semibold">
                       {tag}
